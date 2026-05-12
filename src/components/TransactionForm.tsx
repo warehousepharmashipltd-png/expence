@@ -53,9 +53,9 @@ export function TransactionForm({ isOpen, onOpenChange, onAdd, categories, onAdd
       <button
         onClick={() => onOpenChange(true)}
         aria-label="Add"
-        className="fixed bottom-8 right-8 w-14 h-14 bg-black text-white rounded-2xl flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all z-50 group md:hidden"
+        className="fixed bottom-24 md:bottom-8 right-6 md:right-8 w-16 h-16 bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40 hover:scale-110 active:scale-90 transition-all z-50 group"
       >
-        <Plus size={28} className="group-hover:rotate-90 transition-transform duration-300" />
+        <Plus size={32} className="group-hover:rotate-90 transition-transform duration-300" />
       </button>
 
       <AnimatePresence>

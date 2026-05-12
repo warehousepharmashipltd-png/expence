@@ -2,6 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Transaction } from '../types';
 import { getCategoryColor } from '../constants';
 import { motion } from 'motion/react';
+import { cn } from '../lib/utils';
 
 interface BudgetsViewProps {
   transactions: Transaction[];
@@ -86,10 +87,16 @@ export function BudgetsView({ transactions, categories }: BudgetsViewProps) {
           const color = getCategoryColor(category);
 
           return (
-            <div key={category} className="bg-white p-8 rounded-[32px] border border-gray-50 shadow-sm">
+            <div key={category} className="bg-white p-8 rounded-[40px] border border-gray-50 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex justify-between items-center mb-6">
-                <h4 className="font-bold text-gray-900 tracking-tight">{category}</h4>
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                  <h4 className="font-bold text-gray-900 tracking-tight">{category}</h4>
+                </div>
+                <span className={cn(
+                  "text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest",
+                  spent > budget ? "bg-rose-50 text-rose-500" : "bg-emerald-50 text-emerald-500"
+                )}>
                   {percentage.toFixed(0)}% Used
                 </span>
               </div>
@@ -99,24 +106,33 @@ export function BudgetsView({ transactions, categories }: BudgetsViewProps) {
                   <p className="text-2xl font-bold tracking-tight text-gray-900">
                     ৳{spent.toLocaleString('en-BD')}
                   </p>
-                  <p className="text-sm text-gray-400 font-medium">
-                    Budget: ৳{budget.toLocaleString('en-BD')}
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">
+                    Limit: ৳{budget.toLocaleString('en-BD')}
                   </p>
                 </div>
                 
-                <div className="budget-bar">
+                <div className="h-3 rounded-full bg-gray-50 overflow-hidden shadow-inner">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${percentage}%` }}
-                    className="budget-fill"
-                    style={{ backgroundColor: color }}
-                  />
+                    className="h-full rounded-full transition-all duration-1000 relative"
+                    style={{ 
+                      backgroundColor: color,
+                      boxShadow: `0 0 10px ${color}40`
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+                  </motion.div>
                 </div>
                 
                 {spent > budget && (
-                  <p className="text-xs text-rose-500 font-semibold uppercase tracking-wider">
-                    ⚠️ Over budget by ৳{(spent - budget).toLocaleString('en-BD')}
-                  </p>
+                  <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-[10px] text-rose-500 font-bold uppercase tracking-widest flex items-center gap-1"
+                  >
+                    <span className="animate-pulse">⚠️</span> Budget exceeded by ৳{(spent - budget).toLocaleString('en-BD')}
+                  </motion.p>
                 )}
               </div>
             </div>

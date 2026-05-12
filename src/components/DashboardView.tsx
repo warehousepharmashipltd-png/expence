@@ -73,15 +73,16 @@ export function DashboardView({ summary, transactions, onDeleteTransaction }: Da
         <aside className="lg:col-span-5 space-y-6">
           <SummaryChart transactions={transactions} />
           
-          <div className="bg-black text-white p-8 rounded-[32px] shadow-xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white p-8 rounded-[32px] shadow-xl relative overflow-hidden">
             <div className="relative z-10">
-              <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Insights</p>
-              <h3 className="text-lg font-semibold mb-3 tracking-tight">Smart Savings</h3>
-              <p className="text-gray-400 text-sm leading-relaxed font-medium">
-                You've spent <span className="text-white">12% more</span> on groceries this week. Consider bulk buying.
+              <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-2">Insights</p>
+              <h3 className="text-xl font-bold mb-3 tracking-tight">Smart Savings</h3>
+              <p className="text-white/80 text-sm leading-relaxed font-medium">
+                You've spent <span className="text-white font-bold">12% more</span> on groceries this week. Consider bulk buying.
               </p>
             </div>
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-blue-400/20 rounded-full blur-2xl" />
           </div>
         </aside>
       </div>
