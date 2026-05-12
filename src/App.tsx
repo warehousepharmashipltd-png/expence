@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Wallet, Search, Plus } from 'lucide-react';
+import { Wallet, Search, Plus, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Transaction, TransactionSummary } from './types';
 import { TransactionForm } from './components/TransactionForm';
@@ -23,6 +23,7 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isPremium, setIsPremium] = useState(() => {
     return localStorage.getItem('saiful_tracker_premium') === 'true';
   });
@@ -113,15 +114,32 @@ export default function App() {
   return (
     <div className="flex flex-col md:flex-row h-screen w-full bg-[#F3F4F6] overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-68 bg-white border-r border-gray-100 flex flex-col p-8 hidden md:flex shrink-0">
-        <div className="flex items-center gap-4 mb-12">
-          <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-indigo-500/30 rotate-3 group-hover:rotate-0 transition-transform">
+      <aside className={cn(
+        "bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 transition-all duration-300 ease-in-out relative",
+        isSidebarCollapsed ? "w-20 p-6 items-center" : "w-68 p-8"
+      )}>
+        <button 
+          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          className="absolute -right-3 top-10 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-black hover:border-gray-300 shadow-sm transition-all z-20"
+        >
+          {isSidebarCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
+        </button>
+
+        <div className={cn(
+          "flex items-center gap-4 mb-12 transition-all",
+          isSidebarCollapsed ? "justify-center" : ""
+        )}>
+          <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-indigo-500/30 shrink-0">
             S
           </div>
-          <span className="font-black text-2xl tracking-tighter leading-none italic">Saiful's<br /><span className="text-indigo-600 text-xs uppercase font-bold tracking-widest not-italic">Tracker Pro</span></span>
+          {!isSidebarCollapsed && (
+            <span className="font-black text-2xl tracking-tighter leading-none italic">
+              Saiful's<br /><span className="text-indigo-600 text-xs uppercase font-bold tracking-widest not-italic">Tracker Pro</span>
+            </span>
+          )}
         </div>
         
-        <nav className="space-y-2 flex-1">
+        <nav className="space-y-2 flex-1 w-full">
           {[
             { id: 'dashboard', label: 'Dashboard', color: 'bg-blue-500' },
             { id: 'transactions', label: 'Transactions', color: 'bg-emerald-500' },
@@ -131,18 +149,23 @@ export default function App() {
             <div 
               key={item.id}
               onClick={() => setActiveTab(item.id)}
+              title={isSidebarCollapsed ? item.label : undefined}
               className={cn(
-                "group flex items-center gap-4 px-4 py-3 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden",
+                "group flex items-center rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden",
+                isSidebarCollapsed ? "justify-center w-10 h-10 p-0 mx-auto" : "gap-4 px-4 py-3",
                 activeTab === item.id 
                   ? "bg-gray-900 text-white shadow-lg shadow-black/10" 
                   : "text-gray-400 hover:text-black hover:bg-gray-50"
               )}
             >
               <div className={cn(
-                "w-2 h-2 rounded-full transition-all duration-300",
+                "rounded-full transition-all duration-300 shrink-0",
+                isSidebarCollapsed ? "w-1.5 h-1.5" : "w-2 h-2",
                 activeTab === item.id ? item.color : "bg-gray-200 group-hover:bg-gray-400"
               )} />
-              <span className="text-sm font-bold tracking-tight uppercase leading-none">{item.label}</span>
+              {!isSidebarCollapsed && (
+                <span className="text-sm font-bold tracking-tight uppercase leading-none">{item.label}</span>
+              )}
               {activeTab === item.id && (
                 <motion.div 
                   layoutId="activeGlow"
@@ -153,33 +176,35 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="mt-auto p-5 bg-gray-50 rounded-2xl relative overflow-hidden group">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2">
-            {isPremium ? 'Premium Plan Active' : 'Basic Plan'}
-          </p>
-          <p className="text-sm font-semibold mb-3 leading-tight">
-            {isPremium ? 'Enjoy full access to advanced insights' : 'Unlock advanced analytics'}
-          </p>
-          {!isPremium ? (
-            <button 
-              onClick={() => {
-                setIsPremium(true);
-                alert("Welcome to Saiful's Tracker Premium! 🚀 All advanced analytics are now unlocked.");
-              }}
-              className="w-full bg-black text-white text-xs py-2.5 rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-sm relative z-10"
-            >
-              Upgrade Now
-            </button>
-          ) : (
-            <button 
-              onClick={() => setIsPremium(false)}
-              className="w-full bg-gray-200 text-gray-600 text-xs py-2.5 rounded-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm relative z-10"
-            >
-              Manage Plan
-            </button>
-          )}
-          {isPremium && <div className="absolute top-0 right-0 w-2 h-full bg-emerald-500" />}
-        </div>
+        {!isSidebarCollapsed && (
+          <div className="mt-auto p-5 bg-gray-50 rounded-2xl relative overflow-hidden group">
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2">
+              {isPremium ? 'Premium Plan Active' : 'Basic Plan'}
+            </p>
+            <p className="text-sm font-semibold mb-3 leading-tight">
+              {isPremium ? 'Enjoy full access to advanced insights' : 'Unlock advanced analytics'}
+            </p>
+            {!isPremium ? (
+              <button 
+                onClick={() => {
+                  setIsPremium(true);
+                  alert("Welcome to Saiful's Tracker Premium! 🚀 All advanced analytics are now unlocked.");
+                }}
+                className="w-full bg-black text-white text-xs py-2.5 rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-sm relative z-10"
+              >
+                Upgrade Now
+              </button>
+            ) : (
+              <button 
+                onClick={() => setIsPremium(false)}
+                className="w-full bg-gray-200 text-gray-600 text-xs py-2.5 rounded-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm relative z-10"
+              >
+                Manage Plan
+              </button>
+            )}
+            {isPremium && <div className="absolute top-0 right-0 w-2 h-full bg-emerald-500" />}
+          </div>
+        )}
       </aside>
 
       {/* Mobile Header */}
