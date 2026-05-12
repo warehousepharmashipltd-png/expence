@@ -111,7 +111,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#F3F4F6] overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen w-full bg-[#F3F4F6] overflow-hidden">
       {/* Sidebar */}
       <aside className="w-68 bg-white border-r border-gray-100 flex flex-col p-8 hidden md:flex shrink-0">
         <div className="flex items-center gap-4 mb-12">
@@ -209,19 +209,19 @@ export default function App() {
             </p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <div className="relative flex-1 sm:w-64 text-gray-500">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input 
                 type="text" 
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white pl-9 pr-4 py-2.5 rounded-xl text-sm border border-gray-100 focus:ring-2 focus:ring-gray-100 shadow-sm outline-none"
+                className="w-full bg-white pl-11 pr-4 py-3 rounded-2xl text-sm border-none shadow-sm focus:ring-2 focus:ring-gray-100 outline-none"
               />
             </div>
             <button 
               onClick={() => setIsFormOpen(true)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl text-sm font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2"
+              className="hidden sm:flex px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl text-sm font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-all active:scale-95 items-center gap-2"
             >
               <div className="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center">
                 <Plus size={16} />
