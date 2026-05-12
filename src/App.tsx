@@ -27,6 +27,18 @@ export default function App() {
   const [isPremium, setIsPremium] = useState(() => {
     return localStorage.getItem('saiful_tracker_premium') === 'true';
   });
+  const [budgets, setBudgets] = useState<Record<string, number>>(() => {
+    const saved = localStorage.getItem('saiful_tracker_budgets');
+    return saved ? JSON.parse(saved) : {
+      Food: 5000,
+      Transport: 2000,
+      Rent: 15000,
+      Entertainment: 3000,
+      Shopping: 4000,
+      Health: 2000,
+      Others: 1000
+    };
+  });
   const [categories, setCategories] = useState<string[]>(() => {
     const saved = localStorage.getItem('saiful_tracker_categories');
     return saved ? JSON.parse(saved) : [
@@ -45,6 +57,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('saiful_tracker_premium', JSON.stringify(isPremium));
   }, [isPremium]);
+
+  useEffect(() => {
+    localStorage.setItem('saiful_tracker_budgets', JSON.stringify(budgets));
+  }, [budgets]);
 
   const summary = useMemo<TransactionSummary>(() => {
     const income = transactions
@@ -83,6 +99,10 @@ export default function App() {
     }
   };
 
+  const handleUpdateBudget = (category: string, amount: number) => {
+    setBudgets(prev => ({ ...prev, [category]: amount }));
+  };
+
   const renderView = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -103,7 +123,14 @@ export default function App() {
           />
         );
       case 'budgets':
-        return <BudgetsView transactions={transactions} categories={categories} />;
+        return (
+          <BudgetsView 
+            transactions={transactions} 
+            categories={categories} 
+            budgets={budgets}
+            onUpdateBudget={handleUpdateBudget}
+          />
+        );
       case 'insights':
         return <InsightsView transactions={transactions} isPremium={isPremium} />;
       default:
